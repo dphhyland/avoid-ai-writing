@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ---
 
+## [3.19.0] — 2026-07-26
+
+### Added
+- **`mine` voice profile (personal)** — a custom voice profile for David Hyland, calibrated from his own writing (five formal MBA assignments, 2012–2013, plus 2026 work email). One voice, two registers that follow the context profile: a *considered* register for long-form (which fixes dated formal-exam habits — clause-stacking, `so as to`, copula inflation, meta-narration) and a *casual* register for email/chat (which preserves his roughness — dropped apostrophes, fast contractions, abbreviations). Shared spine: Australian/British spelling (never Americanise), his spaced-dash connector kept as a personal convention, and one vivid image/first-person call allowed to land when it carries a claim. Ships with three carve-out notes bolted onto existing rules (em-dash rate exempts his spaced dash; immaculate-typography tier skipped in casual; word table never Americanises). All additions are wrapped in `<!-- BEGIN/END mine (personal) -->` markers to keep upstream merges clean. No detection category or pattern count changed.
+
+---
+
 ## [3.18.0] — 2026-07-22
 
 ### Changed

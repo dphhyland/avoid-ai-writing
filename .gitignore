@@ -17,3 +17,8 @@ Desktop.ini
 
 # Local git worktrees (parallel Claude Code sessions)
 .worktrees/
+
+# Personal writing samples used to calibrate the `mine` voice profile — never publish
+*DavidHyland*
+C223C323_*.pdf
+C240C340_*.pdf
