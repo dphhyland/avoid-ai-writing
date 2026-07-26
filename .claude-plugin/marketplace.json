@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "conorbronsdon-skills",
-  "description": "Conor Bronsdon's public Claude Code / Cowork skills.",
+  "name": "dphhyland-skills",
+  "description": "David Hyland's fork of Conor Bronsdon's Claude Code / Cowork skills, with a personal voice profile.",
   "owner": {
-    "name": "Conor Bronsdon"
+    "name": "David Hyland"
   },
   "plugins": [
     {
