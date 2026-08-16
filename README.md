@@ -14,6 +14,8 @@ Audit & rewrite content to remove AI writing patterns. A practical skill for any
 ---
 
 
+> A fork of [conorbronsdon/avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) carrying a personal `mine` voice profile. Install paths below point at this fork; for the original, use Conor's repo.
+
 A portable writing skill for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenClaw](https://github.com/openclaw/openclaw), [Hermes](https://github.com/NousResearch/hermes-agent), and any other [agentskills.io](https://agentskills.io)-compatible agent. Audits and rewrites content to remove AI writing patterns ("AI-isms").
 
 **Three modes:**
@@ -51,7 +53,7 @@ A one-shot "make this sound human" prompt catches the obvious stuff. This skill 
 **Option 1: Clone into skills directory**
 
 ```bash
-git clone https://github.com/conorbronsdon/avoid-ai-writing ~/.claude/skills/avoid-ai-writing
+git clone https://github.com/dphhyland/avoid-ai-writing ~/.claude/skills/avoid-ai-writing
 ```
 
 **Option 2: Copy the file directly**
@@ -83,12 +85,12 @@ Then use `/clean-ai-writing <your text>` in Claude Code.
 [Cowork](https://www.anthropic.com/cowork) loads skills only from **installed plugins** — it doesn't scan `~/.claude/skills/`, so a bare clone (the Claude Code steps above) won't be discovered there. This repo doubles as a single-plugin [marketplace](https://code.claude.com/docs/en/plugin-marketplaces), so install it as a plugin instead:
 
 ```bash
-/plugin marketplace add conorbronsdon/avoid-ai-writing
-/plugin install avoid-ai-writing@conorbronsdon-skills
+/plugin marketplace add dphhyland/avoid-ai-writing
+/plugin install avoid-ai-writing@dphhyland-skills
 /reload-plugins   # or restart the session, to activate the skill
 ```
 
-In the Cowork desktop app, do the same from **Customize → Plugins → Add marketplace from GitHub** (`conorbronsdon/avoid-ai-writing`), then install **avoid-ai-writing**. The skill auto-triggers from phrases like "remove AI-isms." New releases arrive when the plugin's version is bumped — run `/plugin marketplace update` to pull them.
+In the Cowork desktop app, do the same from **Customize → Plugins → Add marketplace from GitHub** (`dphhyland/avoid-ai-writing`), then install **avoid-ai-writing**. The skill auto-triggers from phrases like "remove AI-isms." New releases arrive when the plugin's version is bumped — run `/plugin marketplace update` to pull them.
 
 The same plugin install works in Claude Code if you'd rather have a versioned, updatable plugin than the file clone above.
 
@@ -105,7 +107,7 @@ clawhub install avoid-ai-writing
 **Option 2: Clone into skills directory**
 
 ```bash
-git clone https://github.com/conorbronsdon/avoid-ai-writing ~/.openclaw/skills/avoid-ai-writing
+git clone https://github.com/dphhyland/avoid-ai-writing ~/.openclaw/skills/avoid-ai-writing
 ```
 
 ### Cursor
@@ -115,7 +117,7 @@ Drop the ported rule into your project's `.cursor/rules/`:
 ```bash
 mkdir -p .cursor/rules
 curl -o .cursor/rules/avoid-ai-writing.mdc \
-  https://raw.githubusercontent.com/conorbronsdon/avoid-ai-writing/main/cursor-rules/avoid-ai-writing.mdc
+  https://raw.githubusercontent.com/dphhyland/avoid-ai-writing/main/cursor-rules/avoid-ai-writing.mdc
 ```
 
 See [`cursor-rules/README.md`](./cursor-rules/README.md) for activation globs and trigger phrases. Functionally identical to the Claude Code skill — same tier vocabulary, same context profiles, same modes.
@@ -127,7 +129,7 @@ Drop the skill into Hermes's skills directory — it then appears automatically 
 ```bash
 mkdir -p ~/.hermes/skills/writing/avoid-ai-writing
 curl -o ~/.hermes/skills/writing/avoid-ai-writing/SKILL.md \
-  https://raw.githubusercontent.com/conorbronsdon/avoid-ai-writing/main/SKILL.md
+  https://raw.githubusercontent.com/dphhyland/avoid-ai-writing/main/SKILL.md
 ```
 
 ### OpenAI Codex
@@ -137,7 +139,7 @@ Codex reads [Agent Skills](https://developers.openai.com/codex/skills) in the sa
 ```bash
 mkdir -p .agents/skills/avoid-ai-writing
 curl -o .agents/skills/avoid-ai-writing/SKILL.md \
-  https://raw.githubusercontent.com/conorbronsdon/avoid-ai-writing/main/SKILL.md
+  https://raw.githubusercontent.com/dphhyland/avoid-ai-writing/main/SKILL.md
 ```
 
 ### Other agents

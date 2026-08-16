@@ -12,7 +12,8 @@ keep the project coherent.
 | `detector/patterns.js` | The deterministic engine — the executable subset of the rules. |
 | `detector/CATEGORIES.md` | The map between SKILL.md rules and detector `type`s. Keep it current. |
 | `README.md` | The pitch and the numbered prose-pattern list. |
-| `cursor-rules/`, `plugins/` | Editor and tool integrations. |
+| `.claude-plugin/`, `skills/` | The plugin manifest and its generated copy of `SKILL.md`. The repo root *is* the plugin, and also serves as its own single-plugin marketplace. Regenerate with `scripts/sync-plugin-skill.sh`. |
+| `cursor-rules/` | Editor and tool integrations. |
 
 ## Adding or changing a rule
 

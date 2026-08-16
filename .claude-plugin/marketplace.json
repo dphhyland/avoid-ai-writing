@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "avoid-ai-writing",
-      "source": "./plugins/avoid-ai-writing",
+      "source": "./",
       "description": "Audit & rewrite content to remove AI writing patterns (\"AI-isms\"). Supports detect-only and edit-in-place modes, voice profiles, and iterate-to-convergence.",
       "category": "productivity",
       "keywords": ["writing", "editing", "ai-detection", "humanize"]
