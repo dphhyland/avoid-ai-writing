@@ -18,6 +18,9 @@ Desktop.ini
 # Local git worktrees (parallel Claude Code sessions)
 .worktrees/
 
+# Human-control corpus: text is fetched, never committed. See corpus/README.md.
+corpus/cache/
+
 # Personal writing samples used to calibrate the `mine` voice profile — never publish
 *DavidHyland*
 C223C323_*.pdf

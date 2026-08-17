@@ -41,8 +41,8 @@ A one-shot "make this sound human" prompt catches the obvious stuff. This skill 
 
 - **Structured audit** — returns identified issues with quoted text, the rewrite, a change summary, and a second-pass audit in four discrete sections. You see exactly what changed and why.
 - **Two-pass detection** — the second pass re-reads the rewrite and catches patterns that survive the first edit: recycled transitions, lingering inflation, copula swaps that snuck through.
-- **111-entry word replacement table across 3 tiers + 10 Tier 3 phrases** — not vibes-based. Every flagged word has a specific, plainer alternative. "Leverage" → "use." "Commence" → "start." Tier 1 words always flag, Tier 2 words flag when they cluster, Tier 3 words flag only at high density. Tier 3 *phrases* (multi-word boilerplate like "the integration of," "decentralized compute") flag on per-phrase repetition or when 3+ distinct phrases stack in one piece — the LLM-self-varies-boilerplate shape.
-- **57 pattern categories** — representative examples below, each with before/after. Includes structural detection (hashtag stuffing, bare-NP bullet lists, hedge-stacked predictions), AI-tool fingerprints (placeholders, citation markup, UTM params), rhythm/uniformity checks, conversational-register tells, and writer-side tests. The full catalog lives in [`SKILL.md`](./SKILL.md); this count is enforced against it in CI.
+- **112-entry word replacement table across 3 tiers + 10 Tier 3 phrases** — not vibes-based. Every flagged word has a specific, plainer alternative. "Leverage" → "use." "Commence" → "start." Tier 1 words always flag, Tier 2 words flag when they cluster, Tier 3 words flag only at high density. Tier 1 itself splits into **1A frequency markers** (`delve`, `tapestry`) and **1B clarity edits** (`in order to`, `utilize`) — same fix, but only 1A is evidence about how a passage was produced, and 1B is weighted lower so a wordiness fix cannot push a document toward an AI classification. Tier 3 *phrases* (multi-word boilerplate like "the integration of," "decentralized compute") flag on per-phrase repetition or when 3+ distinct phrases stack in one piece — the LLM-self-varies-boilerplate shape.
+- **62 pattern categories** — representative examples below, each with before/after. Includes structural detection (hashtag stuffing, bare-NP bullet lists, hedge-stacked predictions), AI-tool fingerprints (placeholders, citation markup, UTM params), rhythm/uniformity checks, conversational-register tells, and writer-side tests. The full catalog lives in [`SKILL.md`](./SKILL.md); this count is enforced against it in CI.
 - **Detect mode** — flag patterns without rewriting. See which flags are real problems vs. judgment calls. Useful when patterns might be intentional or you're auditing content you don't want altered.
 - **Works across platforms** — one `SKILL.md` runs in Claude Code, Cowork (as a plugin), OpenClaw, and Cursor (as a ported rule). See the install paths below.
 
@@ -179,7 +179,7 @@ Trigger detect mode with: "detect," "flag only," "audit only," "just flag," "sca
 
 ## Pattern reference
 
-> Representative examples from the catalog — not the exhaustive list (that's [`SKILL.md`](./SKILL.md)). The skill's human-facing prose catalog and the [detector engine](./detector/) use **different counts on purpose**: the engine implements 45 `type` categories because it splits the vocabulary tiers and adds stylometric/fingerprint signals (punctuation distribution, function-word entropy, bypass-trick detection) that work as math over a document rather than as a rule you'd look up. The two are mapped in [`detector/CATEGORIES.md`](./detector/CATEGORIES.md); don't "fix" one count to match the other.
+> Representative examples from the catalog — not the exhaustive list (that's [`SKILL.md`](./SKILL.md)). The skill's human-facing prose catalog and the [detector engine](./detector/) use **different counts on purpose**: the engine implements 48 `type` categories because it splits the vocabulary tiers and adds stylometric/fingerprint signals (punctuation distribution, function-word entropy, bypass-trick detection) that work as math over a document rather than as a rule you'd look up. The two are mapped in [`detector/CATEGORIES.md`](./detector/CATEGORIES.md); don't "fix" one count to match the other.
 
 ### Content Patterns
 
@@ -263,7 +263,7 @@ Added in v3.4 to catch LLM output that sidesteps the vocabulary tables by substi
 | 44 | **Chatbot citation markup** | `citeturn0search0`, `oai_citation`, `contentReference[oaicite:0]` | Strip the markup token entirely |
 | 45 | **AI-tool URL parameters** | `utm_source=chatgpt.com`, `utm_source=copilot.com` | Strip the tracking parameter; keep the URL if the link matters |
 | 46 | **Speculative gap-filling** | "maintains a low profile," "likely began his career" | Cut the guess, or replace with a sourced fact |
-| 47 | **Hyphenated-pair overuse** | "a high-quality, well-architected, future-proof solution" | Cut to the modifier that matters; no hyphen in predicate ("the report is high quality") |
+| 47 | **Hyphenated modifier stacking** | "a high-quality, well-architected, future-proof solution" | Cut to the modifier that matters; the individual hyphens may be correct |
 | 48 | **Infomercial engagement hooks** | "The catch?", "The kicker?", "Here's the thing." | Delete the hook, state the thing |
 | 49 | **Vocabulary diversity (low TTR)** | Narrow, repetitive word range across 200+ words | Broaden the *what* — name specific things, cite specific cases |
 | 50 | **Self-labeling significance** | "That last move is the contrarian one," "This is the interesting part" | Cut the label; let the explanation carry the weight, or reposition the item so it stands out on its own |
@@ -277,6 +277,24 @@ Added after a real-world exchange in which a maintainer called out an assisted-s
 |---|---------|--------|-------|
 | 52 | **Wall-of-text replies** | A 4+ sentence, sub-150-word reply delivered as one unbroken paragraph with no line breaks — the shape LLMs default to in issue/PR comments, chat, and DMs | Break at thought boundaries. One idea per line-group, the way a person actually types a reply |
 | 53 | **Recap-flattery opener** | "Thanks for all the legwork here — the migration script and the rollback plan you worked through are what made this possible." | Substance first. If thanks is warranted, one plain clause without the recap: "Thanks for the legwork — this looks right to me" |
+
+### Share-post framing (v3.20)
+
+| # | Pattern | Before | After |
+|---|---------|--------|-------|
+| 54 | **Lingering-attention claims** | "The line I keep coming back to:", "I can't stop thinking about this," "this has been rattling around in my head all week" | Open on the thing itself. Carve-out: keep the frame when a reason follows ("I keep coming back to exit-voice because it predicts who quits") |
+
+### Narrated candor (v3.21)
+
+| # | Pattern | Before | After |
+|---|---------|--------|-------|
+| 55 | **Narrated candor** | "Two caveats I would rather flag than let you discover later:", "I want to be upfront:" | State the caveats. Judgment-only: the same words carry real content in conflict-of-interest disclosure ("in the interest of full disclosure, I own shares in…"), which a regex cannot separate from the empty frame |
+
+### Unnecessary hyphenation (v3.24)
+
+| # | Pattern | Before | After |
+|---|---------|--------|-------|
+| 56 | **Unnecessary hyphenation** | "research-impact aggregator," "code-base," "in real-time," "works out-of-the-box" | "research impact aggregator," "codebase," "in real time," "works out of the box." Preserve legitimate modifiers such as "real-time analytics" |
 
 Two writer-side **tests** round out the catalog (judgment checks, not auto-detected): **paragraph-reshuffle immunity** (can you swap two body paragraphs without breaking the piece?) and the **treadmill effect** ("what's actually new in this paragraph?").
 
@@ -313,7 +331,7 @@ That's 35+ AI tells.
 ## Run the detector
 
 The skill ships a deterministic, zero-dependency detection engine in
-[`detector/`](./detector/) — the same 45-category engine the rules above
+[`detector/`](./detector/) — the same engine the rules above
 describe, as runnable code. It works in Node (`>=18`) and the browser with no
 build step.
 
@@ -332,6 +350,55 @@ See [`detector/README.md`](./detector/README.md) for the full `analyzeText` API
 and [`detector/CATEGORIES.md`](./detector/CATEGORIES.md) for the rule ↔ category
 map that keeps `SKILL.md` and the engine in sync.
 
+The engine also ships a preservation validator. `detector/validate.js` compares
+a rewrite against its original and fails when the edit touched something it
+shouldn't have: a code block, YAML frontmatter, a blockquote, a table cell,
+inline code, a URL, a file path, the heading structure, or when the rewrite ends
+with more flagged patterns than it started with.
+
+```bash
+node detector/validate.js before.md after.md   # exits 1 on a preservation error
+```
+
+**Does it pass its own pass?** [`PROOF.md`](./PROOF.md) scores this repo's
+documentation with this repo's detector and publishes the result, including two
+defects the scan found in our own work. `npm run self-scan` reproduces it, and
+CI fails when a document drifts past its budget.
+
+## House style is a different job
+
+This skill removes AI-writing tells. Enforcing a published style guide is the
+different job: it doesn't do that, and it ships no style guides of its own. The
+optional `--style` input takes a house-style config you supply: a `register` list
+the model applies, and a `mechanics` object whose checkable rules
+`scripts/check-style.js` verifies deterministically (quote form and Latin
+abbreviations gate the exit code; heading case, em-dash rate, and number spelling
+are advisory). [`examples/`](./examples/) has the schema. You can skip the input
+entirely and put your guide in your agent's context alongside a
+[voice profile](#triggering-the-skill), as instructions rather than as a checked
+rule set.
+
+If you want Google, Microsoft, Red Hat, or Salesforce style checked in CI,
+[Vale](https://github.com/vale-cli/vale) already covers that. Its
+[package registry](https://github.com/vale-cli/packages) carries
+Vale-compatible implementations of those four, alongside ports of `proselint`,
+`write-good`, and `alex`. The four style-guide packages are MIT-licensed, though
+the guides they implement are not always (see the audit below); the linter ports
+vary, and proselint's is BSD-3-Clause. The two tools do different jobs and
+compose: Vale gates a document against a rule set, applying fixes one alert at a
+time, while this skill rewrites whole passages as you draft.
+
+Paywalled guides (Chicago, APA, MLA, AP) have no machine-readable
+implementation here or in Vale, and won't get one here. Nothing in this repo
+could verify that a rewrite is Chicago-compliant, so claiming it would fail the
+same bar [`PROOF.md`](./PROOF.md) holds every other number to. Passing one of
+their names to `--style` bundles nothing; it falls back to the model's own
+knowledge, and `SKILL.md` instructs it to say so and to claim no compliance.
+That is an instruction rather than a checked rule, which is the point: there is
+nothing here to check it against. The
+[license audit](https://github.com/conorbronsdon/avoid-ai-writing/issues/88)
+behind that line is public.
+
 ## Credits
 
 Pattern research informed by:
@@ -341,14 +408,15 @@ Pattern research informed by:
 - [brandonwise/humanizer](https://github.com/brandonwise/humanizer) — tiered vocabulary system, statistical analysis research (burstiness, sentence length variation, trigram repetition), and rewrite philosophy
 - [OpenClaw](https://github.com/openclaw/openclaw) humanizer skill ecosystem — community patterns and vocabulary research
 
-Authored by [Conor Bronsdon](https://github.com/conorbronsdon) · [LinkedIn](https://www.linkedin.com/in/conorbronsdon/) · [Chain of Thought podcast](https://chainofthought.show)
+Pull requests get an automated first-pass review from [Qodo Merge](https://github.com/marketplace/qodo-merge-pro-for-open-source), free through Qodo's open source program. Thanks to the Qodo team for supporting OSS maintainers.
+
+Authored by [Conor Bronsdon](https://github.com/conorbronsdon) · [LinkedIn](https://www.linkedin.com/in/conorbronsdon/) · [Chain of Thought podcast](https://chainofthought.show/?utm_source=github&utm_medium=referral&utm_campaign=repo-readme&utm_content=avoid-ai-writing)
 
 ## Community / Multilingual
 
 Things the community has built around this skill:
 
-- **[avoid-ai-writing-multilingual](https://github.com/jurigis/avoid-ai-writing-multilingual)** by [Jürgen Kraus](https://github.com/jurigis) — German (`SKILL-DE.md`) and Romanian (`SKILL-RO.md`) adaptations, grounded in native-language research rather than translated from English. French and Spanish planned.
-- **[$avoid token + burn web app](https://avoid-ai-writing-app.vercel.app)** — a community-built Solana token (`$avoid`) and token-burn web app around this project (2026), now in maintenance mode.
+- **[avoid-ai-writing-multilingual](https://github.com/jurigis/avoid-ai-writing-multilingual)** by [Jürgen Kraus](https://github.com/jurigis) — German (`SKILL-DE.md`), French (`SKILL-FR.md`), Italian (`SKILL-IT.md`), Romanian (`SKILL-RO.md`), and Swedish (`SKILL-SV.md`) adaptations, grounded in native-language research rather than translated from English.
 
 Built something on top of this skill? Open an issue — happy to link it here.
 
@@ -356,7 +424,7 @@ Built something on top of this skill? Open an issue — happy to link it here.
 
 ## Disclaimer
 
-*All views, opinions, and statements expressed on this account are solely my own and are made in my personal capacity. They do not reflect, and should not be construed as reflecting, the views, positions, or policies of Modular. This account is not affiliated with, authorized by, or endorsed by Modular in any way.*
+*This is an independent personal project, not affiliated with, sponsored by, or endorsed by any company. All views expressed are my own.*
 
 ## License
 
